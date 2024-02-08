@@ -30,13 +30,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        path: ./main
 
       - name: Setup pnpm
+        working-directory: ./main
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
       - name: Use Node.js 18
+        working-directory: ./main
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -55,29 +58,28 @@ jobs:
           repository: wighawag/stratagems
           fetch-depth: 0
           lfs: true
-          path: stratagems-main
+          path: ./stratagems-main
 
       - name: Install dependencies for Stratagems
-        run: | 
-          cd stratagems-main
-          pnpm install
+        working-directory: ./stratagems-main
+        run: pnpm install
           
            
       - name: Index Stratagems
+        working-directory: ./stratagems-main
         env: 
           ETH_NODE_URI_composablelabs: ${{ secrets.ETH_NODE_URI_COMPOSABLELABS }}
         run: |
-          cp ./indexed-state-composablelabs.json stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
-          cd stratagems-main
+          cp ../main/indexed-state-composablelabs.json ./web/static/indexed-state-composablelabs.json 2>/dev/null || :
           pnpm indexer:index composablelabs
-          cd ..
-          cp stratagems-main/web/static/indexed-state-composablelabs.json ./indexed-state-composablelabs.json
+          cp ./web/static/indexed-state-composablelabs.json ../main/indexed-state-composablelabs.json
 
 
       ################################################################
 
 
       - name: Push
+        working-directory: ./main
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
@@ -86,6 +88,7 @@ jobs:
           git push
 
       - name: Upload artifact
+        working-directory: ./main
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./
