@@ -60,7 +60,6 @@ jobs:
           cd stratagems-main
           pnpm install
           
-           
       - name: Index Stratagems
         env: 
           ETH_NODE_URI_composablelabs: ${{ secrets.ETH_NODE_URI_COMPOSABLELABS }}
