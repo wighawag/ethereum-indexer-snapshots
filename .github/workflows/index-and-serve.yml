@@ -65,11 +65,11 @@ jobs:
         env: 
           ETH_NODE_URI_composablelabs: ${{ secrets.ETH_NODE_URI_COMPOSABLELABS }}
         run: |
-          cp ./main/indexed-state-composablelabs.json ./stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
+          cp ./main/snapshots/indexed-state-composablelabs.json ./stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
           cd stratagems-main
           pnpm indexer:index composablelabs
           cd ..
-          cp ./stratagems-main/web/static/indexed-state-composablelabs.json ./main/indexed-state-composablelabs.json
+          cp ./stratagems-main/web/static/indexed-state-composablelabs.json ./main/snapshots/indexed-state-composablelabs.json
 
 
       ################################################################
@@ -84,10 +84,16 @@ jobs:
           git commit -m "update"
           git push
 
+
+      - name: Generate Directory Listings
+        uses: jayanta525/github-pages-directory-listing@v4.0.0
+        with:
+          FOLDER: ./main/snapshots
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./main
+          path: ./main/snapshots/
 
   # Deployment job
   deploy:
