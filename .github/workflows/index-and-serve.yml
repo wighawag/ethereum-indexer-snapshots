@@ -64,11 +64,11 @@ jobs:
         env: 
           ETH_NODE_URI_composablelabs: ${{ secrets.ETH_NODE_URI_COMPOSABLELABS }}
         run: |
-          cp ./indexed-state-composablelabs.json stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
+          cp ./main/indexed-state-composablelabs.json ./stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
           cd stratagems-main
           pnpm indexer:index composablelabs
           cd ..
-          cp stratagems-main/web/static/indexed-state-composablelabs.json ./indexed-state-composablelabs.json
+          cp ./stratagems-main/web/static/indexed-state-composablelabs.json ./main/indexed-state-composablelabs.json
 
 
       ################################################################
@@ -76,6 +76,7 @@ jobs:
 
       - name: Push
         run: |
+          cd ./main
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
@@ -85,7 +86,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: ./
+          path: ./main
 
   # Deployment job
   deploy:
