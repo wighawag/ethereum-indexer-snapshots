@@ -54,16 +54,14 @@ jobs:
         with:
           repository: wighawag/stratagems
           fetch-depth: 0
+          lfs: true
           path: stratagems-main
 
       - name: Install dependencies for Stratagems
         run: | 
           cd stratagems-main
-          pnpm config --location project set recursive-install false
-          cd common
           pnpm install
-          cd indexer
-          pnpm install
+          
            
       - name: Index Stratagems
         env:
