@@ -1,10 +1,7 @@
-# Sample workflow for building and deploying a VitePress site to GitHub Pages
-#
-name: Deploy VitePress site to Pages
+name: Index And Serve
 
 on:
-  # Runs on pushes targeting the `main` branch. Change this to `master` if you're
-  # using the `master` branch as the default branch.
+  # Runs on pushes targeting the `main` branch.
   push:
     branches: [main]
 
@@ -13,12 +10,10 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -34,13 +29,11 @@ jobs:
           path: ./main
 
       - name: Setup pnpm
-        working-directory: ./main
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
       - name: Use Node.js 18
-        working-directory: ./main
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -62,25 +55,26 @@ jobs:
           path: ./stratagems-main
 
       - name: Install dependencies for Stratagems
-        working-directory: ./stratagems-main
-        run: pnpm install
+        run: | 
+          cd stratagems-main
+          pnpm install
           
            
       - name: Index Stratagems
-        working-directory: ./stratagems-main
         env: 
           ETH_NODE_URI_composablelabs: ${{ secrets.ETH_NODE_URI_COMPOSABLELABS }}
         run: |
-          cp ../main/indexed-state-composablelabs.json ./web/static/indexed-state-composablelabs.json 2>/dev/null || :
+          cp ./indexed-state-composablelabs.json stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
+          cd stratagems-main
           pnpm indexer:index composablelabs
-          cp ./web/static/indexed-state-composablelabs.json ../main/indexed-state-composablelabs.json
+          cd ..
+          cp stratagems-main/web/static/indexed-state-composablelabs.json ./indexed-state-composablelabs.json
 
 
       ################################################################
 
 
       - name: Push
-        working-directory: ./main
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
@@ -89,7 +83,6 @@ jobs:
           git push
 
       - name: Upload artifact
-        working-directory: ./main
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./
