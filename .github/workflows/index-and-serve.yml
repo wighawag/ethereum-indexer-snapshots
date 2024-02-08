@@ -70,6 +70,7 @@ jobs:
           cp ./indexed-state-composablelabs.json stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
           cd stratagems-main
           pnpm indexer:index
+          cd ..
           cp stratagems-main/web/static/indexed-state-composablelabs.json ./indexed-state-composablelabs.json
 
 
