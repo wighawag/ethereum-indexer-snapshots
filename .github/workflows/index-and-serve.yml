@@ -64,12 +64,11 @@ jobs:
           
            
       - name: Index Stratagems
-        env:
-          MODE: composablelabs
+        env: ETH_NODE_URI_composablelabs: ${{ secrets.ETH_NODE_URI_COMPOSABLELABS }}
         run: |
           cp ./indexed-state-composablelabs.json stratagems-main/web/static/indexed-state-composablelabs.json 2>/dev/null || :
           cd stratagems-main
-          pnpm indexer:index
+          pnpm indexer:index composablelabs
           cd ..
           cp stratagems-main/web/static/indexed-state-composablelabs.json ./indexed-state-composablelabs.json
 
