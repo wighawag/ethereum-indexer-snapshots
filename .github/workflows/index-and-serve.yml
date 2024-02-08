@@ -59,6 +59,10 @@ jobs:
       - name: Install dependencies for Stratagems
         run: | 
           cd stratagems-main
+          pnpm config --location project set recursive-install false
+          cd common
+          pnpm install
+          cd indexer
           pnpm install
            
       - name: Index Stratagems
